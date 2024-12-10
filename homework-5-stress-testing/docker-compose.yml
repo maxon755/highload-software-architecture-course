@@ -1,0 +1,105 @@
+version: '3.4'
+
+services:
+  web-server:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/usr/share/nginx/html
+      - .docker/services/nginx/config/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          memory: 15M
+
+
+  app:
+    build:
+      context: .
+      dockerfile: .docker/services/php/Dockerfile
+      args:
+        - USER_UID=${USER_UID:-1000}
+        - USER_GID=${USER_GID:-1000}
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+
+  mysql:
+    image: mysql:8.0.31
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --performance-schema=OFF
+    volumes:
+      - .docker/services/mysql:/docker-entrypoint-initdb.d
+      - mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+
+
+  telegraf:
+    build:
+      context: .
+      dockerfile: .docker/services/telegraf/Dockerfile
+      args:
+        - DOCKER_GID=${DOCKER_GID:-963}
+    volumes:
+      - .docker/services/telegraf/config/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+      - web-server
+      - app
+    links:
+      - influxdb
+    ports:
+      - '8125:8125'
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    environment:
+      - INFLUXDB_DB=influx
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=admin
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    links:
+      - influxdb
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana:/var/lib/grafana
+      - .docker/services/grafana/provisioning/:/etc/grafana/provisioning/
+      - .docker/services/grafana/dashboards/:/var/lib/grafana/dashboards/
+
+volumes:
+  mysql: {}
+  grafana: {}
+  influxdb: {}
