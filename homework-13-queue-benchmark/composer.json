@@ -1,0 +1,20 @@
+{
+    "name": "maxon755/benchmark",
+    "type": "project",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Maxon755\\Benchmark\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maksym Haiduk",
+            "email": "maksym.haiduk@gmail.com"
+        }
+    ],
+    "require": {
+        "xobotyi/beansclient": "dev-master",
+        "ext-redis": "*"
+    }
+}

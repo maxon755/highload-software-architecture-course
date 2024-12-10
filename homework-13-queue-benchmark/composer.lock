@@ -1,0 +1,83 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "b61e92740e6e81a79d27bdc7632abc41",
+    "packages": [
+        {
+            "name": "xobotyi/beansclient",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xobotyi/beansclient.git",
+                "reference": "2125dcf1352452832f3f099cdca90d241dbe9154"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xobotyi/beansclient/zipball/2125dcf1352452832f3f099cdca90d241dbe9154",
+                "reference": "2125dcf1352452832f3f099cdca90d241dbe9154",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-sockets": "*",
+                "php": ">=8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "xobotyi\\beansclient\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Zinovyev",
+                    "email": "xog3@yandex.ru",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP7.1+ client for beanstalkd work queue with no dependencies",
+            "homepage": "https://github.com/xobotyi/beansclient",
+            "keywords": [
+                "beanstalk",
+                "beanstalkd",
+                "client",
+                "php",
+                "queue"
+            ],
+            "support": {
+                "issues": "https://github.com/xobotyi/beansclient/issues",
+                "source": "https://github.com/xobotyi/beansclient/tree/master"
+            },
+            "funding": [
+                {
+                    "url": "https://www.patreon.com/xobotyi",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2022-04-06T00:27:53+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "xobotyi/beansclient": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}

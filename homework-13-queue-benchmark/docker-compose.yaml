@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  php:
+    build:
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: tail -f /dev/null
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    command: |
+      redis-server
+      --appendonly no
+      --save ""
+
+  beanstalkd:
+    image: bodsch/docker-beanstalkd
+    ports:
+      - "11300:11300"
+    #command: beanstalkd -b /tmp
+
+volumes:
+  redis-data:
