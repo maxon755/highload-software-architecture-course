@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  image-server:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/image-server:/etc/nginx/conf.d
+      - ./images:/usr/share/nginx/html/images
+
+  cache-server:
+    build:
+      dockerfile: ./config/cache-server/Dockerfile
+      context: .
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/cache-server/nginx.conf:/etc/nginx/nginx.conf
+      - ./cache:/var/cache/nginx/images_cache

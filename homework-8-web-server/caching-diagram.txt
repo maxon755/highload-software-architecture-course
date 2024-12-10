@@ -1,0 +1,19 @@
+@startuml
+actor       User       as User
+== Get not cached image (repeats twice) ==
+participant CacheServer as CacheServer
+participant ImageServer as ImageServer
+User -> CacheServer : GET /images/big-ben.png
+CacheServer -> ImageServer : PROXY GET /images/big-ben.png
+ImageServer -> CacheServer : return big-ben.png
+CacheServer -> User : return big-ben.png
+
+== Get cached image ==
+User -> CacheServer : GET /images/big-ben.png
+CacheServer -> User : return big-ben.png from cache
+
+== Purge cache ==
+User -> CacheServer : PURGE http://localhost/images/big-ben.png
+CacheServer -> User : 204; Image cache removed
+
+@enduml
