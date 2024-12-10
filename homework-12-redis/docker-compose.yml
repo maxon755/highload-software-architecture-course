@@ -1,0 +1,85 @@
+version: '3.4'
+
+services:
+  web-server:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/usr/share/nginx/html
+      - .docker/services/nginx/config/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+    networks:
+      - homework12-net
+
+  app:
+    build:
+      context: .
+      dockerfile: .docker/services/php/Dockerfile
+      args:
+        - USER_UID=${USER_UID:-1000}
+        - USER_GID=${USER_GID:-1000}
+    environment:
+      PHP_IDE_CONFIG: "serverName=hsa-12"
+    volumes:
+      - .:/var/www/html
+      - .docker/services/php/config/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    networks:
+      - homework12-net
+
+  redis-master:
+    image: redis:latest
+    volumes:
+      - redis-master-data:/data
+      - ./.docker/services/redis:/usr/local/etc/redis
+    ports:
+      - "6379:6379"
+    command:
+      - redis-server
+      - /usr/local/etc/redis/redis.conf
+    networks:
+      homework12-net:
+        ipv4_address: 172.42.0.42
+
+  redis-slave-1:
+    image: redis:latest
+    command: redis-server --slaveof redis-master 6379
+    volumes:
+      - redis-slave-1-data:/data
+    networks:
+      homework12-net:
+        ipv4_address: 172.42.0.43
+
+  redis-slave-2:
+    image: redis:latest
+    command: redis-server --slaveof redis-master 6379
+    volumes:
+      - redis-slave-2-data:/data
+    networks:
+      homework12-net:
+        ipv4_address: 172.42.0.44
+
+  redis-sentinel:
+    image: redis:latest
+    command: redis-sentinel /tmp/sentinel/sentinel.conf
+    depends_on:
+      - redis-master
+    volumes:
+      - ./.docker/services/sentinel/:/tmp/sentinel/
+    networks:
+      homework12-net:
+        ipv4_address: 172.42.0.50
+
+networks:
+  homework12-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.42.0.0/16
+          gateway: 172.42.0.1
+
+volumes:
+  redis-master-data:
+  redis-slave-1-data:
+  redis-slave-2-data:

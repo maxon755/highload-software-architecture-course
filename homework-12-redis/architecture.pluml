@@ -1,0 +1,14 @@
+@startuml
+
+frame "Redis Cluster" {
+    [Redis Sentinel] -->  [Redis Master]
+
+    [Redis Master] --> [Redis Slave 1]
+    [Redis Master] --> [Redis Slave 2]
+}
+
+[PHP-FPM] --> [Redis Sentinel]
+[NginX] --> [PHP-FPM]
+
+
+@enduml

@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {{ form(form) }}
+
+    <h1>Last tasks</h1>
+    <ul>
+        {% for task in tasks %}
+            <li>"{{ task.task|e }}"; deadline: {{ task.dueDate|date("Y-m-d") }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
