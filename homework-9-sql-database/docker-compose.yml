@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0.34
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: storage
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./mysql.d:/etc/mysql/conf.d
+
+  sysbench:
+    image: perconalab/sysbench
+    depends_on:
+      - mysql
+    volumes:
+      - ./sysbench_scripts:/sysbench/scripts
+
+
+volumes:
+  mysql: {}
